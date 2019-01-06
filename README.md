@@ -2,7 +2,8 @@
  
 # Description: 
 - A 4x4 board of numbered tiles has one missing space and is randomly set up. To win the game, the player must slide tiles over to put the tiles back in order.
- 
+
+[Wireframe](https://github.com/phamin2001/Project1-Game/blob/master/Wireframe.jpg)
  
 # Basic Requirement:
 1. **Create a 4x4 board.**
