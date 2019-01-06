@@ -1,4 +1,3 @@
-# Project1-Game
 # Sliding puzzle
  
 # Description: 
