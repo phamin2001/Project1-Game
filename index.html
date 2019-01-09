@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sliding Puzzle</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/velocity/2.0.5/velocity.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/velocity/2.0.5/velocity.ui.js"></script>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
+</head>
+<body>
+    <h1>New Puzzle</h1>
+    <div class="modal-body row" id="page">
+        <div class="col-lg-7 col-sm-7">
+            <div class="game-board">
+            </div>
+        </div>
+        <div class="col-lg-5 col-sm-5 right-sides-columns">
+            <div class="statistic col-lg-12" >
+                <h3>Time: <span id='time'></span></h3>
+                <h3>Movement: <span id='movement'></span></h3>
+            </div>
+            <div class="row">
+                <div class="buttons col-lg-12">
+                        <button id="start">Start</button>
+                        <button id="reset">Reset</button>
+                        <button>Solve</button>
+                        <button id="next-level">Next Level</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- <div id="canvas">
+        this is canvas
+    </div> -->
+
+    <script src="js/app.js"></script>
+</body>
+</html>

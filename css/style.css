@@ -1,0 +1,15 @@
+.game-square {
+    background: rgb(124, 124, 211);
+    width: 150px;
+    height: 150px;
+    margin: 2px 3.5px;
+    display: inline-block;
+}
+
+body {
+    background: rgb(150, 211, 150);
+}
+
+.buttons {
+    display: right;
+}
