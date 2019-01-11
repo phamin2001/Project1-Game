@@ -463,16 +463,16 @@ const solve = () => {
     
     arrayOfIndex = arrayOfIndex.sort();
     findOppositeOfPreviousSelectMove();
-    for (let i = 0; i < arrayOfIndex.length; i++) {
-        for(let key in arrayOfFakeF[i]){
+    // for (let i = 0; i < arrayOfIndex.length; i++) {
+        for(let key in arrayOfFakeF[0]){
             if(key != oppositeOfPreviousSelectMove) {
                 selectMove = key;
                 // break;
             }
         }
-    }
+    // }
    
-    alert(selectMove);
+    // alert(selectMove);
     moveNumber(selectMove);
     
 
