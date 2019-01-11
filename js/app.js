@@ -9,15 +9,34 @@ let positionOfEmptyObject = {};
 let positionOfEligibleNumberObject = {};
 let swapObject = {};
 let eligibleNumVal;
-    
+
+let sizeOfY;
+let sizeOfPuzzleFromUser;
+
 let arrayOfRandumNums = [];
 let arrayOfPuzzleNums = [];
 let arrayOfEachColumn = [];
+let sortArray = [];
+
+let userMoveFlag = false;
+let fakeArrayOfPuzzleNums = [];
+
+const createSortArray = () => {
+    let arrayOfRow = [];
+    let sortNum = 1;
+
+    for(let row = 0; row < sizeOfY; row++) {
+        arrayOfRow = [];
+        for(let index = 0; index < sizeOfY; index++) {
+            sortNum === sizeOfPuzzle ? arrayOfRow.push(0) : arrayOfRow.push(sortNum);
+            sortNum++;
+        }
+        sortArray.unshift(arrayOfRow);
+    }
+    console.log('sortArray: '); console.log(sortArray);
+}
 
 const checkForWin = () => {
-    let sortArray = [[7, 8, 0],
-                     [4, 5, 6],
-                     [1, 2, 3]];
     if(JSON.stringify(arrayOfPuzzleNums) == JSON.stringify(sortArray)) {
         alert('Congradulation! You Win');
         $('body').off('keydown');
@@ -28,6 +47,7 @@ const resetAllArrays = () => {
     arrayOfRandumNums = [];
     arrayOfPuzzleNums = [];
     arrayOfEachColumn = [];
+    sortArray         = [];
 }
 
 const resetMoveChoicesForNumObject = () => {
@@ -48,33 +68,64 @@ const resetArrowKeyObject = () => {
     }
 }
 
-const swapNumbers = () => {
-    // update arrayOfPuzzleNums after swap
-    for(let key in positionOfEmptyObject) {
-        swapObject[key] = positionOfEmptyObject[key];
-    }
-    console.log('swapObject: '); console.log(swapObject);
-    for(let key in positionOfEligibleNumberObject) {
-        positionOfEmptyObject[key] = positionOfEligibleNumberObject[key];
-    }
-    console.log('New position of empty(0) after swap should be: '); console.log(positionOfEmptyObject);
-    for(let key in swapObject) {
-        positionOfEligibleNumberObject[key] = swapObject[key];
-    }
-    console.log('New position of eligibleNumber after swap should be: '); console.log(positionOfEligibleNumberObject);
+const swapNumbers = (userMoveFlag) => {
+    
+    if(userMoveFlag) {
+        // update arrayOfPuzzleNums after swap:
+        for(let key in positionOfEmptyObject) {
+            swapObject[key] = positionOfEmptyObject[key];
+        }
+        console.log('swapObject: '); console.log(swapObject);
+        for(let key in positionOfEligibleNumberObject) {
+            positionOfEmptyObject[key] = positionOfEligibleNumberObject[key];
+        }
+        console.log('New position of empty(0) after swap should be: '); console.log(positionOfEmptyObject);
+        for(let key in swapObject) {
+            positionOfEligibleNumberObject[key] = swapObject[key];
+        }
+        console.log('New position of eligibleNumber after swap should be: '); console.log(positionOfEligibleNumberObject);
+    
+        arrayOfPuzzleNums[positionOfEmptyObject.row][positionOfEmptyObject.index] = 0;
+        arrayOfPuzzleNums[positionOfEligibleNumberObject.row][positionOfEligibleNumberObject.index] = eligibleNumVal;
+        console.log('New arrayOfPuzzleNums after swap is: '); console.log(arrayOfPuzzleNums);
+    
+    
+        // update numbers in game-board after swap
+        // y = row + 1 , x = index + 1
+        // set empty postion on game-board
+        $(`.game-square[x=${positionOfEmptyObject.index + 1}][y=${positionOfEmptyObject.row + 1}]`).text('');
+        $(`.game-square[x=${positionOfEligibleNumberObject.index + 1}][y=${positionOfEligibleNumberObject.row + 1}]`).text(`${eligibleNumVal}`);
+        checkForWin();
+        eligibleMoveForNum();
+        
+    } else if(!userMoveFlag) {
+        // solve solution
+        // making fake arrayOfPuzzleNums
+        // calculate MD for each num
+        // find H
 
-    arrayOfPuzzleNums[positionOfEmptyObject.row][positionOfEmptyObject.index] = 0;
-    arrayOfPuzzleNums[positionOfEligibleNumberObject.row][positionOfEligibleNumberObject.index] = eligibleNumVal;
-    console.log('New arrayOfPuzzleNums after swap is: '); console.log(arrayOfPuzzleNums);
+
+         // update fakeArrayOfPuzzleNums after swap:
+        for(let key in positionOfEmptyObject) {
+            swapObject[key] = positionOfEmptyObject[key];
+        }
+        console.log('in fakeSwap, swapObject: '); console.log(swapObject);
+        for(let key in positionOfEligibleNumberObject) {
+            positionOfEmptyObject[key] = positionOfEligibleNumberObject[key];
+        }
+        console.log('in fakeSwap, New position of empty(0) after swap should be: '); console.log(positionOfEmptyObject);
+        for(let key in swapObject) {
+            positionOfEligibleNumberObject[key] = swapObject[key];
+        }
+        console.log('in fakeSwap, New position of eligibleNumber after swap should be: '); console.log(positionOfEligibleNumberObject);
+    
+        fakeArrayOfPuzzleNums[positionOfEmptyObject.row][positionOfEmptyObject.index] = 0;
+        fakeArrayOfPuzzleNums[positionOfEligibleNumberObject.row][positionOfEligibleNumberObject.index] = eligibleNumVal;
+        console.log('in fakeSwap, New fakeArrayOfPuzzleNums after swap is: '); console.log(fakeArrayOfPuzzleNums);
+        console.log('arrayOfPuzzleNums after fakeSwap is: '); console.log(arrayOfPuzzleNums);
 
 
-    // update numbers in game-board after swap
-    // y = row + 1 , x = index + 1
-    // set empty postion on game-board
-    $(`.game-square[x=${positionOfEmptyObject.index + 1}][y=${positionOfEmptyObject.row + 1}]`).text('');
-    $(`.game-square[x=${positionOfEligibleNumberObject.index + 1}][y=${positionOfEligibleNumberObject.row + 1}]`).text(`${eligibleNumVal}`);
-    checkForWin();
-    eligibleMoveForNum();
+    }
 }
 
 const positionOfEligibleNumber = (val) => {
@@ -123,7 +174,9 @@ const moveNumber = (val) => {
         if(key === val && moveChoicesForNum[key] === true) {
             console.log(`number can move on ${val} direction`);
             positionOfEligibleNumber(val);
-            setTimeout(swapNumbers(), 1000);
+            // setTimeout(swapNumbers(), 1000);
+            userMoveFlag = true;
+            swapNumbers(userMoveFlag);
             break;
         }
     } 
@@ -200,10 +253,10 @@ const findEmptyBox = () => {
 }
 
 const gameBoard = () => {
-    for (let y = 3; y > 0; y--) {
+    for (let y = sizeOfY; y > 0; y--) {
         const $row = $('<div/>').addClass('game-row');
         arrayOfEachColumn = [];
-        for (let x = 1; x < 4; x++) {
+        for (let x = 1; x < sizeOfY + 1; x++) {
             const $gameSquare = $('<div/>').addClass('game-square').attr('x', x).attr('y', y);
             const ranNum = arrayOfRandumNums.splice(0,1)[0];
             arrayOfEachColumn.push(ranNum);
@@ -218,7 +271,7 @@ const gameBoard = () => {
     console.log('arrayOfPuzzleNums: [y=row+1, x=index+1]'); console.log(arrayOfPuzzleNums);
 }
 
-const generateArrayOfUniqueRandumNumbers = (sizeOfPuzzle) => {
+const generateArrayOfUniqueRandumNumbers = () => {
     while(arrayOfRandumNums.length < sizeOfPuzzle) {
         let randumNum = Math.floor(Math.random() * sizeOfPuzzle);
         if(arrayOfRandumNums.indexOf(randumNum) === -1) arrayOfRandumNums.push(randumNum);
@@ -231,11 +284,14 @@ $('#start').on('click', () => {
     resetAllArrays();
     $('body').on('keydown');
     let sizeOfPuzzleFromUser = prompt("Enter a size of puzzle from 3 to 6");
-    let sizeOfPuzzle = Math.pow(parseInt(sizeOfPuzzleFromUser), 2);
+    sizeOfY = parseInt(sizeOfPuzzleFromUser);
+    sizeOfPuzzle = Math.pow(parseInt(sizeOfPuzzleFromUser), 2);
     console.log(`Size of puzzle is: ${sizeOfPuzzle}`);
 
+    createSortArray();
+
     generateArrayOfUniqueRandumNumbers(sizeOfPuzzle);
-    gameBoard();
+    gameBoard(sizeOfY);
     findEmptyBox();
     eligibleMoveForNum();
 })
@@ -251,4 +307,137 @@ $('#next-level').on('click', () => {
     resetMoveChoicesForNumObject();
     resetAllArrays();
     alert("Press the Start button for next Challenge");
+})
+
+/////////////////////////////////////////////////////////////////////////////
+//////////////////////////////Solve Solution/////////////////////////////////
+/////////////////////////Using A* Search Algorithm///////////////////////////
+////////////////G: Cost(Number of steps taken to current state)//////////////
+/////////H: Total Estimate Distance to Goal for all numbers in puzzle////////
+//////MD: Manhattan Distance (Estimate Distance to Goal for each number)/////
+/////////////////////////////F = G + H //////////////////////////////////////
+
+let g = 0;
+let fakeG = 0;
+let fakeGflag = false;
+
+let h_sumOfMD = 0;
+let f = 0;
+let fakeF = 0;
+
+let arrayOfObjectForSortArrayWithRowIndex = [];
+let arrayOfObjectForPuzzleNumWithRowIndex = [];
+let arrayOfFakeF = [];
+
+const resetArraysforSolvingSolution = () => {
+    arrayOfObjectForSortArrayWithRowIndex = [];
+    arrayOfObjectForPuzzleNumWithRowIndex = [];
+}
+
+const calculateF = (fakeGflag) => {
+    if(fakeGflag) {
+        fakeF = h_sumOfMD + fakeG;
+        console.log(`fakeF: ${fakeF}`);
+    }
+}
+
+
+const calculateH_SumOfMD = () => {
+    h_sumOfMD = 0;
+    arrayOfObjectForPuzzleNumWithRowIndex.forEach(function (element, index, array) {
+        h_sumOfMD += parseInt(element.MD);
+    })
+    console.log(`h_sumOfMD: ${h_sumOfMD}`);
+}
+
+const addMDtoArrayOfObjectForNumWithRowIndex = () => {
+    arrayOfObjectForPuzzleNumWithRowIndex.forEach(function (element, index, array) {
+        for (let i = 0; i < arrayOfObjectForSortArrayWithRowIndex.length; i++) {
+            // console.log(`element is : ${element.val}`);
+            // console.log('arrayOfObjectForSortArrayWithRowIndex[i].val: '); console.log(arrayOfObjectForSortArrayWithRowIndex[i].val);
+            if (element.val === arrayOfObjectForSortArrayWithRowIndex[i].val) {
+                let rowDifference = Math.abs(parseInt(element.row) - parseInt(arrayOfObjectForSortArrayWithRowIndex[i].row));
+                let indexDifference = Math.abs(parseInt(element.index) - parseInt(arrayOfObjectForSortArrayWithRowIndex[i].index));
+                let MD = rowDifference + indexDifference;
+                element.MD = `${MD}`;
+                break;
+            }
+        }
+    })
+    console.log("arrayOfObjectForPuzzleNumWithRowIndex with MD: "); console.log(arrayOfObjectForPuzzleNumWithRowIndex);
+}
+
+const createArrayOfObjectForSortArrayWithRowIndex = () => {
+    sortArray.forEach(function (element, index, array) {
+        element.forEach(function (element2d, index2d, array2d) {
+            console.log(`row: ${index}, index: ${index2d}`);
+            arrayOfObjectForSortArrayWithRowIndex.push({val: `${element2d}`, row: `${index}`, index: `${index2d}`});
+            console.log(`arrayOfObjectForSortArrayWithRowIndex: `); console.log(arrayOfObjectForSortArrayWithRowIndex);
+        })
+    })
+}
+
+const createArrayOfObjectForNumWithRowIndex = (arrayOfNums) => {
+    arrayOfNums.forEach(function (element, index, array) {
+        element.forEach(function (element2d, index2d, array2d) {
+            console.log(`row: ${index}, index: ${index2d}`);
+            arrayOfObjectForPuzzleNumWithRowIndex.push({val: `${element2d}`, row: `${index}`, index: `${index2d}`});
+            console.log(`arrayOfObjectForPuzzleNumWithRowIndex: `); console.log(arrayOfObjectForPuzzleNumWithRowIndex);
+        })
+    })
+}
+
+const fakeSolve = () => {
+    eligibleMoveForNum();
+    arrayOfFakeF = [];
+
+    fakeG++;
+    console.log(`fakeG: ${fakeG}`);
+
+    for(let key in moveChoicesForNum) {
+        if(moveChoicesForNum[key] === true) {
+            // claculate if move happend: increment g,
+            // find newarrayOfPuzzleNums and save it for compare 
+            // find MD and H of newArrayOfPuzzleNums and save it for later compare
+            // find F for this move option vor later compare
+            // keep track to not go back to previous move
+           
+            
+
+            fakeArrayOfPuzzleNums = JSON.parse(JSON.stringify(arrayOfPuzzleNums));
+            console.log(`fakeArrayOfPuzzleNums before fakeSwap: `); console.log(fakeArrayOfPuzzleNums);
+            findEmptyBox();
+            positionOfEligibleNumber(key);
+            userMoveFlag = false;
+            swapNumbers(userMoveFlag);
+
+            resetArraysforSolvingSolution();
+            createArrayOfObjectForSortArrayWithRowIndex();
+            createArrayOfObjectForNumWithRowIndex(fakeArrayOfPuzzleNums);
+            addMDtoArrayOfObjectForNumWithRowIndex();
+           
+            calculateH_SumOfMD();
+           
+            fakeGflag = true;
+            calculateF(fakeGflag);
+            arrayOfFakeF.push({fakeF});
+            console.log(`arrayOfFakeF: ${arrayOfFakeF}`);
+
+
+
+        }
+    }
+}
+
+$('#solve').on('click', () => {
+    console.log('start a auto solve algorithm');
+    g = 0;
+    resetArraysforSolvingSolution();
+    createArrayOfObjectForSortArrayWithRowIndex();
+
+    createArrayOfObjectForNumWithRowIndex(arrayOfPuzzleNums);
+    addMDtoArrayOfObjectForNumWithRowIndex(arrayOfPuzzleNums);
+
+    calculateH_SumOfMD();
+    fakeSolve();
 })
