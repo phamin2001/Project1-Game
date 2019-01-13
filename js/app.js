@@ -92,7 +92,6 @@ const swapNumbers = (userMoveFlag) => {
         arrayOfPuzzleNums[positionOfEligibleNumberObject.row][positionOfEligibleNumberObject.index] = eligibleNumVal;
         console.log('New arrayOfPuzzleNums after swap is: '); console.log(arrayOfPuzzleNums);
     
-    
         // update numbers in game-board after swap
         // y = row + 1 , x = index + 1
         // set empty postion on game-board
@@ -121,8 +120,6 @@ const swapNumbers = (userMoveFlag) => {
         fakeArrayOfPuzzleNums[positionOfEligibleNumberObject.row][positionOfEligibleNumberObject.index] = eligibleNumVal;
         console.log('in fakeSwap, New fakeArrayOfPuzzleNums after swap is: '); console.log(fakeArrayOfPuzzleNums);
         console.log('arrayOfPuzzleNums after fakeSwap is: '); console.log(arrayOfPuzzleNums);
-
-
     }
 }
 
@@ -325,13 +322,14 @@ let fakeF = 0;
 
 let arrayOfObjectForSortArrayWithRowIndex = [];
 let arrayOfObjectForPuzzleNumWithRowIndex = [];
+let arrayOfFakeFwithDirection = [];
 let arrayOfFakeF = [];
+let arrayOfFirstTwoSelectedMove = [];
 
 let selectMove = '';
 let oppositeOfPreviousSelectMove = '';
 
 const findOppositeOfPreviousSelectMove = () => {
-  
     if(selectMove === 'up') {
         oppositeOfPreviousSelectMove = 'down';
     } else if(selectMove === 'down') {
@@ -354,7 +352,6 @@ const calculateF = (fakeGflag) => {
         console.log(`fakeF: ${fakeF}`);
     }
 }
-
 
 const calculateH_SumOfMD = () => {
     h_sumOfMD = 0;
@@ -403,18 +400,14 @@ const createArrayOfObjectForNumWithRowIndex = (arrayOfNums) => {
 
 const fakeSolve = () => {
     eligibleMoveForNum();
-    arrayOfFakeF = [];
-
-    fakeG++;
+    fakeG = g + 1;
     console.log(`fakeG: ${fakeG}`);
 
-    // findOppositeOfSelectMove();  && key != oppositeOfSelectMove
+    arrayOfFakeFwithDirection = [];
+    arrayOfFakeF = [];
 
     for(let key in moveChoicesForNum) {
-        
         if(moveChoicesForNum[key] === true) {
-         
-
             fakeArrayOfPuzzleNums = JSON.parse(JSON.stringify(arrayOfPuzzleNums));
             console.log(`fakeArrayOfPuzzleNums before fakeSwap: `); console.log(fakeArrayOfPuzzleNums);
             findEmptyBox();
@@ -431,51 +424,56 @@ const fakeSolve = () => {
            
             fakeGflag = true;
             calculateF(fakeGflag);
-            arrayOfFakeF.push({ [key]:fakeF });
-            console.log(`arrayOfFakeF: `); console.log(arrayOfFakeF);
-
+            arrayOfFakeFwithDirection.push({ [key]:fakeF });
+            console.log(`arrayOfFakeFwithDirection: `); console.log(arrayOfFakeFwithDirection);
+            arrayOfFakeF.push(fakeF);
+            arrayOfFakeF.sort();
+            console.log("Array of fakeF: "); console.log(arrayOfFakeF);
         }
     }
 }
 
-const solve = () => {
-    
-    findEmptyBox();
-
-    g++;
-    let minF = 1000;
-    let checkF;
-    let arrayOfIndex = [];
-
-    
-
-    for(let i = 0; i < arrayOfFakeF.length; i++) {
-        for(let key in arrayOfFakeF[i]) {
-            checkF = arrayOfFakeF[i].key;
-            if(checkF < minF) {
-                arrayOfIndex.push(i);
-                minF = checkF;
+const findSelectMove = () => {
+    arrayOfFirstTwoSelectedMove = [];
+    for (let i = 0; i < 2; i++) {
+        for(let j = 0; j < arrayOfFakeFwithDirection.length; j++) {
+            for(let key in arrayOfFakeFwithDirection[j]) {
+                if(arrayOfFakeFwithDirection[j][key] === arrayOfFakeF[i]) {
+                    arrayOfFirstTwoSelectedMove.push(key);
+                }
             }
-        }
+        }       
     }
-    // console.log(`index of smallest f: ${index} `);
-    // console.log(`key is: ${selectMove}`);
-    
-    arrayOfIndex = arrayOfIndex.sort();
-    findOppositeOfPreviousSelectMove();
-    // for (let i = 0; i < arrayOfIndex.length; i++) {
-        for(let key in arrayOfFakeF[0]){
-            if(key != oppositeOfPreviousSelectMove) {
-                selectMove = key;
-                // break;
-            }
-        }
-    // }
-   
-    // alert(selectMove);
-    moveNumber(selectMove);
-    
+    if (arrayOfFirstTwoSelectedMove.length > 2) {
+        arrayOfFirstTwoSelectedMove = arrayOfFirstTwoSelectedMove.slice(0,2);
+    } 
+    console.log('arrayOfFirstTwoSelectedMove: '); console.log(arrayOfFirstTwoSelectedMove);
+}
 
+const solve = () => {
+    findEmptyBox();
+    g++;
+
+    findSelectMove();
+    findOppositeOfPreviousSelectMove();
+
+    console.log(`selectMove: ${selectMove}`);
+    console.log(`oppositeOfPreviousSelectMove: ${oppositeOfPreviousSelectMove}`);
+
+
+    if (selectMove === '') {
+        selectMove = arrayOfFirstTwoSelectedMove[0];
+        moveNumber(selectMove);
+    } else if (oppositeOfPreviousSelectMove === arrayOfFirstTwoSelectedMove[0]) {
+        selectMove = arrayOfFirstTwoSelectedMove[1];
+        moveNumber(selectMove);
+    } else if (oppositeOfPreviousSelectMove === arrayOfFirstTwoSelectedMove[1]) {
+        selectMove = arrayOfFirstTwoSelectedMove[0];
+        moveNumber(selectMove);
+    } else {
+        selectMove = arrayOfFirstTwoSelectedMove[0];
+        moveNumber(selectMove);
+    }
 }
 
 $('#solve').on('click', () => {
@@ -483,17 +481,9 @@ $('#solve').on('click', () => {
     g = 0;
     resetArraysforSolvingSolution();
     createArrayOfObjectForSortArrayWithRowIndex();
-
     createArrayOfObjectForNumWithRowIndex(arrayOfPuzzleNums);
     addMDtoArrayOfObjectForNumWithRowIndex(arrayOfPuzzleNums);
-
     calculateH_SumOfMD();
-    
-
     fakeSolve();
     solve();
-
-    
-    
-    
 })
